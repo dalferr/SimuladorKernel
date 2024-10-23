@@ -1,11 +1,9 @@
 # Simulador de Kernel
 
-----------
 ## Introducción
 
 En la parte teórica de la asignatura de Sistemas Operativos se estudian los principales elementos de un kernel: gestión y planificación de procesos, sistema de memoria y entrada/salida. Además, en el último tema se expondrán las medidas de seguridad que se implementan en los kernels y los tipos de ataques que han surgido en los últimos años. Asimismo, con esta práctica se trabajará el lenguaje de programación C, que también se utiliza en otras asignaturas de la especialidad de Ingeniería de Computadores.
 
------------------
 ## Objetivo
 
 El objetivo de esta práctica es desarrollar un simulador de un kernel. El trabajo se divide en tres partes.
