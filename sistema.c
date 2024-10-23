@@ -78,7 +78,7 @@ void* process_gen(int freq) {
 
 // FUncion clock
 void* sche_dispa(void* arg) {
-  printf("Se ha llamado al Scheduler\n")
+  printf("Se ha llamado al Scheduler\n");
 }
 
 int main(int freq_temp, int freq_sche, int freq_PCB, int hilos, int cores, int CPUs) {
