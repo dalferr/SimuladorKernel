@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 // Definir variables de sincronización
 pthread_mutex_t mutex;
@@ -10,6 +11,7 @@ pthread_cond_t cond2;
 // Definir variables globales
 int done = 0;
 int tenp_kont = 2;
+int freq_c;
 
 // Estructura de PCB
 typedef struct {
@@ -39,6 +41,7 @@ void* sche_dispa(void* arg) {
 
 // FUncion clock
 void* reloj(void* arg) {
+  //int* freq = (int*)arg;
   while(1){
     pthread_mutex_lock(&mutex);
     while(done<tenp_kont){
@@ -53,40 +56,49 @@ void* reloj(void* arg) {
 
 /// Funcion timer
 void* timer(void* arg) {
- // int freq = *((int*)arg); // Cast para convertir void* en puntero
+
+  //Hacemos un casting para convertir el parametro a int
+  int freq = *(int *)arg;
+
   pthread_mutex_lock(&mutex);
   while(1){
     done++;
     
-    //sche_dispa(NULL);
-    printf("Ciclo en el timer\n");
-
+    printf("Freq: %d\n", freq);
+    fflush(stdout);
     pthread_cond_signal(&cond1); 
     pthread_cond_wait(&cond2,&mutex);
-    //pthread_mutex_unlock(&mutex);
   }
 }
 
 
 // Funcion Process Generator
 void* process_gen(void* arg) {
-  //int freq = *((int*)arg); // Cast para convertir void* en puntero
+  //Hacemos un casting para convertir el parametro a int
+  int freq = *(int *)arg;
   pthread_mutex_lock(&mutex);
   while(1){
     done++;
 
 
-    printf("Ciclo en el Process Generator\n");
-
+    printf("Freq: %d\n", freq);
+    fflush(stdout);
     pthread_cond_signal(&cond1);
     pthread_cond_wait(&cond2,&mutex);
-    //pthread_mutex_unlock(&mutex);
   }
 }
 
 
 
 int main(int argc, char* argv[]) {
+  
+  if (argc != 7) {
+    printf("\nUso: %s <frecuencia_clock> <frecuencia_temp> <frecuencia_processGen> <num_cpus> <num_cores> <num_hilos>\n", argv[0]);
+    exit(1);
+  }
+
+  int freq_t = atoi(argv[1]);
+  int freq_p = atoi(argv[2]);
 
   //Iniciamos las variables de los hilos
   pthread_mutex_init(&mutex, NULL);
@@ -100,9 +112,9 @@ int main(int argc, char* argv[]) {
   pthread_t th_process_gen;
   pthread_t th_sche_dispa;
   pthread_create(&th_clock, NULL, reloj, NULL);
-  pthread_create(&th_timer, NULL, timer, NULL);
-  pthread_create(&th_process_gen, NULL, process_gen, NULL);
-  pthread_create(&th_sche_dispa, NULL, sche_dispa, NULL);
+  pthread_create(&th_timer, NULL, timer, &freq_t);
+  pthread_create(&th_process_gen, NULL, process_gen, &freq_p);
+  //pthread_create(&th_sche_dispa, NULL, sche_dispa, NULL);
 
   // Esperar a que los hilos se junten
   pthread_join(th_clock, NULL);
