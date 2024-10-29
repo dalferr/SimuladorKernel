@@ -24,13 +24,15 @@ typedef struct {
 } PCB;
 
 // Estructura de Cola de Procesos
-typedef struct {
+struct  process_queue{
   PCB queue[1000];
   int ini;
   int fin;
-} process_queue;
+};
 
-process_queue cola_procesos;
+struct process_queue cola_procesos;
+cola_procesos.ini = 0;
+  cola_procesos.fin = -1;
 
 // Estructura Machine
 typedef struct {
@@ -124,8 +126,7 @@ int main(int argc, char* argv[]) {
   cont_p = 0;
 
   //Inicializamos las estructuras
-  cola_procesos.ini = 0;
-  cola_procesos.fin = -1;
+  
 
 
 
