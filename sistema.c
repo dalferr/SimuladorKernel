@@ -12,6 +12,10 @@ pthread_cond_t cond2;
 int done = 0;
 int tenp_kont = 2;
 int freq_c;
+int mul_t;
+int mul_p;
+int cont_t;
+int cont_p;
 
 // Estructura de PCB
 typedef struct {
@@ -61,11 +65,22 @@ void* timer(void* arg) {
   int freq = *(int *)arg;
 
   pthread_mutex_lock(&mutex);
+
   while(1){
+      
+    cont_t++;
+    if (cont_t==mul_t){
+      //Hace lo que tenga que hacer
+      printf("Timer: SI\n");
+      cont_t = 0;
+    }
+    else{
+      printf("Timer: NO\n");
+    }
+
     done++;
-    
-    printf("Freq: %d\n", freq);
-    fflush(stdout);
+    //printf("Freq: %d\n", freq);
+    //fflush(stdout);
     pthread_cond_signal(&cond1); 
     pthread_cond_wait(&cond2,&mutex);
   }
@@ -78,11 +93,22 @@ void* process_gen(void* arg) {
   int freq = *(int *)arg;
   pthread_mutex_lock(&mutex);
   while(1){
+    
+    cont_p++;
+    if (cont_p==mul_p){
+      //Hace lo que tenga que hacer
+      printf("Pg: SI\n");
+      cont_p = 0;
+    }
+    else{
+      printf("Pg: NO\n");
+    }
+
     done++;
 
 
-    printf("Freq: %d\n", freq);
-    fflush(stdout);
+    //printf("Freq: %d\n", freq);
+    //fflush(stdout);
     pthread_cond_signal(&cond1);
     pthread_cond_wait(&cond2,&mutex);
   }
@@ -97,8 +123,13 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-  int freq_t = atoi(argv[1]);
-  int freq_p = atoi(argv[2]);
+  int freq_c = atoi(argv[1]);
+  int freq_t = atoi(argv[2]);
+  int freq_p = atoi(argv[3]);
+  mul_t = freq_c * freq_t;
+  mul_p = freq_c * freq_p;
+  cont_t = 0;
+  cont_p = 0;
 
   //Iniciamos las variables de los hilos
   pthread_mutex_init(&mutex, NULL);
