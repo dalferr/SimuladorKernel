@@ -25,7 +25,7 @@ typedef struct {
 
 // Estructura de Cola de Procesos
 typedef struct {
-  PCB queue[1000];
+  PCB queue[100000];
   int ini;
   int fin;
 } process_queue;
