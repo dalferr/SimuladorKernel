@@ -45,7 +45,6 @@ void* sche_dispa(void* arg) {
 
 // FUncion clock
 void* reloj(void* arg) {
-  //int* freq = (int*)arg;
   while(1){
     pthread_mutex_lock(&mutex);
     while(done<tenp_kont){
@@ -60,14 +59,8 @@ void* reloj(void* arg) {
 
 /// Funcion timer
 void* timer(void* arg) {
-
-  //Hacemos un casting para convertir el parametro a int
-  int freq = *(int *)arg;
-
   pthread_mutex_lock(&mutex);
-
   while(1){
-      
     cont_t++;
     if (cont_t==mul_t){
       //Hace lo que tenga que hacer
@@ -79,8 +72,6 @@ void* timer(void* arg) {
     }
 
     done++;
-    //printf("Freq: %d\n", freq);
-    //fflush(stdout);
     pthread_cond_signal(&cond1); 
     pthread_cond_wait(&cond2,&mutex);
   }
@@ -89,11 +80,8 @@ void* timer(void* arg) {
 
 // Funcion Process Generator
 void* process_gen(void* arg) {
-  //Hacemos un casting para convertir el parametro a int
-  int freq = *(int *)arg;
   pthread_mutex_lock(&mutex);
   while(1){
-    
     cont_p++;
     if (cont_p==mul_p){
       //Hace lo que tenga que hacer
@@ -103,12 +91,7 @@ void* process_gen(void* arg) {
     else{
       printf("Pg: NO\n");
     }
-
     done++;
-
-
-    //printf("Freq: %d\n", freq);
-    //fflush(stdout);
     pthread_cond_signal(&cond1);
     pthread_cond_wait(&cond2,&mutex);
   }
@@ -143,8 +126,8 @@ int main(int argc, char* argv[]) {
   pthread_t th_process_gen;
   pthread_t th_sche_dispa;
   pthread_create(&th_clock, NULL, reloj, NULL);
-  pthread_create(&th_timer, NULL, timer, &freq_t);
-  pthread_create(&th_process_gen, NULL, process_gen, &freq_p);
+  pthread_create(&th_timer, NULL, timer, NULL);
+  pthread_create(&th_process_gen, NULL, process_gen, NULL);
   //pthread_create(&th_sche_dispa, NULL, sche_dispa, NULL);
 
   // Esperar a que los hilos se junten
