@@ -46,6 +46,7 @@ void* sche_dispa(void* arg) {
   while(1){
     sem_wait(&sem); //se queda esperando a timer
     printf("Se ha llamado al Scheduler\n");
+    pthread_mutex_unlock(&mutex); //desbloquea el mutex para que timer pueda seguir su ejecucución
   }
 }
 
@@ -72,7 +73,7 @@ void* timer(void* arg) {
     if (cont_t==mul_t){
       //Hace lo que tenga que hacer
       sem_post(&sem); //señal para que se ejecute sche_dispa
-      printf("TIMER: SI\n");
+      pthread_mutex_lock(&mutex); //para evitar que la ejecucion siga antes de que el dispatcher se ejecute
       cont_t = 0;
     }
     else{
