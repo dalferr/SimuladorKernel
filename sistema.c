@@ -2,9 +2,11 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <time.h>
+#include <semaphore.h>
 
 // Definir variables de sincronización
 pthread_mutex_t mutex;
+sem_t sem; //semaforo para sincronizar el timer con el scheduler
 pthread_cond_t cond;
 pthread_cond_t cond1;
 pthread_cond_t cond2;
@@ -41,8 +43,10 @@ typedef struct {
 
 
 void* sche_dispa(void* arg) {
-  printf("Se ha llamado al Scheduler\n");
-  return NULL;
+  while(1){
+    sem_wait(&sem); //se queda esperando a timer
+    printf("Se ha llamado al Scheduler\n");
+  }
 }
 
 
@@ -67,7 +71,8 @@ void* timer(void* arg) {
     cont_t++;
     if (cont_t==mul_t){
       //Hace lo que tenga que hacer
-      printf("Timer: SI\n");
+      sem_post(&sem); //señal para que se ejecute sche_dispa
+      printf("TIMER: SI\n");
       cont_t = 0;
     }
     else{
@@ -132,6 +137,7 @@ int main(int argc, char* argv[]) {
 
   //Iniciamos las variables de los hilos
   pthread_mutex_init(&mutex, NULL);
+  sem_init(&sem, 0, 0);
   pthread_cond_init(&cond, NULL);
   pthread_cond_init(&cond1, NULL);
   pthread_cond_init(&cond2, NULL);
@@ -144,7 +150,7 @@ int main(int argc, char* argv[]) {
   pthread_create(&th_clock, NULL, reloj, NULL);
   pthread_create(&th_timer, NULL, timer, NULL);
   pthread_create(&th_process_gen, NULL, process_gen, NULL);
-  //pthread_create(&th_sche_dispa, NULL, sche_dispa, NULL);
+  pthread_create(&th_sche_dispa, NULL, sche_dispa, NULL);
 
   // Esperar a que los hilos se junten
   pthread_join(th_clock, NULL);
