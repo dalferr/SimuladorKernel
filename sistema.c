@@ -129,6 +129,9 @@ int main(int argc, char* argv[]) {
   cont_t = 0;
   cont_p = 0;
 
+  //Inicializamos la estructura machine
+  machine maquina = {atoi(argv[4]), atoi(argv[5]), atoi(argv[6])};
+
   //Iniciamos las variables de los hilos
   pthread_mutex_init(&mutex, NULL);
   sem_init(&sem, 0, 0);
