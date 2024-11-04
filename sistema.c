@@ -32,7 +32,7 @@ typedef struct {
   int fin;
 } process_queue;
 
-process_queue cola_procesos;
+process_queue cola_procesos = {0, -1};
 
 // Estructura Machine
 typedef struct {
@@ -127,13 +127,6 @@ int main(int argc, char* argv[]) {
   mul_p = freq_c * freq_p;
   cont_t = 0;
   cont_p = 0;
-
-  //Inicializamos las estructuras
-  cola_procesos.ini = 0;
-  cola_procesos.fin = -1;
-
-
-
 
   //Iniciamos las variables de los hilos
   pthread_mutex_init(&mutex, NULL);
