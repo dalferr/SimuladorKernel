@@ -7,6 +7,7 @@
 // Estructura de PCB
 typedef struct {
   int pid;
+  int vida;
 } PCB;
 
 // Estructura de Cola de Procesos

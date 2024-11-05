@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
   //Iniciamos las variables de los hilos
   pthread_mutex_init(&mutex, NULL);
   sem_init(&sem, 0, 0);
+  sem_init(&sem1, 0, 0);
   pthread_cond_init(&cond, NULL);
   pthread_cond_init(&cond1, NULL);
   pthread_cond_init(&cond2, NULL);
@@ -35,16 +36,19 @@ int main(int argc, char* argv[]) {
   // Creamos los hilos
   pthread_t th_clock;
   pthread_t th_timer;
-  pthread_t th_process_gen;
+  pthread_t th_timer1;
   pthread_t th_sche_dispa;
+  pthread_t th_process_gen;
   pthread_create(&th_clock, NULL, reloj, NULL);
   pthread_create(&th_timer, NULL, timer, NULL);
-  pthread_create(&th_process_gen, NULL, process_gen, NULL);
+  pthread_create(&th_timer1, NULL, timer1, NULL);
   pthread_create(&th_sche_dispa, NULL, sche_dispa, NULL);
+  pthread_create(&th_process_gen, NULL, process_gen, NULL);
 
   // Esperar a que los hilos se junten
   pthread_join(th_clock, NULL);
   pthread_join(th_timer, NULL);
-  pthread_join(th_process_gen, NULL);
+  pthread_join(th_timer1, NULL);
   pthread_join(th_sche_dispa, NULL);
+  pthread_join(th_process_gen, NULL);
 }
