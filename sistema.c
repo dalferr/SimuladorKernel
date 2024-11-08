@@ -29,6 +29,8 @@ int main(int argc, char* argv[]) {
   pthread_mutex_init(&mutex, NULL);
   sem_init(&sem, 0, 0);
   sem_init(&sem1, 0, 0);
+  sem_init(&sem2, 0, 0);
+  sem_init(&sem3, 0, 0);
   pthread_cond_init(&cond, NULL);
   pthread_cond_init(&cond1, NULL);
   pthread_cond_init(&cond2, NULL);

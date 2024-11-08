@@ -10,6 +10,8 @@
 pthread_mutex_t mutex;
 sem_t sem; //semaforo para sincronizar el timer con el scheduler
 sem_t sem1; //semaforo para sincronizar el timer con el scheduler
+sem_t sem2; //semaforo para sincronizar el timer con el scheduler
+sem_t sem3; //semaforo para sincronizar el timer con el scheduler
 pthread_cond_t cond;
 pthread_cond_t cond1;
 pthread_cond_t cond2;
@@ -31,12 +33,13 @@ void* sche_dispa(void* arg) {
     sem_wait(&sem); //se queda esperando a timer
     printf("Se ha llamado al Scheduler\n");
     fflush(stdout);
+    sem_post(&sem1);
   }
 }
 
 void* process_gen(void* arg) {
   while(1){
-    sem_wait(&sem1); //se queda esperando a timer
+    sem_wait(&sem2); //se queda esperando a timer
     PCB proc;
       proc.pid = (rand() % 32668) + 100; //Para simular un pid aleatorio
       proc.vida = (rand() % 20) + 1; //Para simular un tiempo de vida aleatorio
@@ -45,6 +48,8 @@ void* process_gen(void* arg) {
 
     printf("Pg: %d\n", cola_procesos.queue[cola_procesos.fin].pid);
     fflush(stdout);
+
+    sem_post(&sem3);
   }
 }
 
@@ -69,6 +74,7 @@ void* timer(void* arg) {
     cont_t++;
     if (cont_t==mul_t){
       sem_post(&sem); //señal para que se ejecute sche_dispa
+      sem_wait(&sem1);
       cont_t = 0;
     }
     else{
@@ -89,7 +95,8 @@ void* timer1(void* arg) {
   while(1){
     cont_p++;
     if (cont_p==mul_p){
-      sem_post(&sem1); //señal para que se ejecute process_gen
+      sem_post(&sem2); //señal para que se ejecute process_gen
+      sem_wait(&sem3);
       cont_p = 0;
     }
     else{
