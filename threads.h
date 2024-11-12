@@ -43,11 +43,26 @@ void* process_gen(void* arg) {
     PCB proc;
       proc.pid = (rand() % 32668) + 100; //Para simular un pid aleatorio
       proc.vida = (rand() % 20) + 1; //Para simular un tiempo de vida aleatorio
-      cola_procesos.fin += 1;
-      cola_procesos.queue[cola_procesos.fin] = proc; 
+      int prioridad = (rand() % 3) + 1; //Para simular un nivel de prioridad aleatorio del 1 al 3
 
-    printf("Pg: %d\n", cola_procesos.queue[cola_procesos.fin].pid);
-    fflush(stdout);
+      if (prioridad == 1) {
+        cola_procesos.cola1.fin += 1;
+        cola_procesos.cola1.queue[cola_procesos.cola1.fin] = proc;
+        printf("Pg: %d Cola: 1\n", cola_procesos.cola1.queue[cola_procesos.cola1.fin].pid);
+        fflush(stdout);
+      }
+      else if (prioridad == 2) {
+        cola_procesos.cola2.fin += 1;
+        cola_procesos.cola2.queue[cola_procesos.cola2.fin] = proc;
+        printf("Pg: %d Cola: 2\n", cola_procesos.cola2.queue[cola_procesos.cola2.fin].pid);
+        fflush(stdout);
+      }
+      else if (prioridad == 3) {
+        cola_procesos.cola3.fin += 1;
+        cola_procesos.cola3.queue[cola_procesos.cola1.fin] = proc;
+        printf("Pg: %d Cola: 3\n", cola_procesos.cola3.queue[cola_procesos.cola3.fin].pid);
+        fflush(stdout);
+      }
 
     sem_post(&sem3);
   }
