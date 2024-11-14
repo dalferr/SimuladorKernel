@@ -24,6 +24,7 @@ int mul_t;
 int mul_p;
 int cont_t;
 int cont_p;
+int prioridad;
 
 
 
@@ -40,27 +41,55 @@ void* sche_dispa(void* arg) {
 void* process_gen(void* arg) {
   while(1){
     sem_wait(&sem2); //se queda esperando a timer
-    PCB proc;
-      proc.pid = (rand() % 32668) + 100; //Para simular un pid aleatorio
-      proc.vida = (rand() % 20) + 1; //Para simular un tiempo de vida aleatorio
-      int prioridad = (rand() % 3) + 1; //Para simular un nivel de prioridad aleatorio del 1 al 3
+      //PCB proc;
+      PCB* proc = (PCB*)malloc(sizeof(PCB));
+      proc->pid = (rand() % 32668) + 100; //Para simular un pid aleatorio
+      proc->vida = (rand() % 20) + 1; //Para simular un tiempo de vida aleatorio
+      prioridad = (rand() % 3) + 1; //Para simular un nivel de prioridad aleatorio del 1 al 3
 
       if (prioridad == 1) {
-        cola_procesos.cola1.fin += 1;
-        cola_procesos.cola1.queue[cola_procesos.cola1.fin] = proc;
-        printf("Pg: %d Cola: 1\n", cola_procesos.cola1.queue[cola_procesos.cola1.fin].pid);
+        if (cola_procesos.cola1.cant == 0){
+          proc->sig = NULL;
+          cola_procesos.cola1.prim = proc;
+          cola_procesos.cola1.ult = proc;
+          cola_procesos.cola1.cant = 1;
+        } 
+        else {
+          cola_procesos.cola1.ult->sig = proc;
+          cola_procesos.cola1.ult = proc;
+          cola_procesos.cola1.cant += 1;
+        }
+        printf("Pg: %d Cola: 1\n", cola_procesos.cola1.ult->pid);
         fflush(stdout);
       }
       else if (prioridad == 2) {
-        cola_procesos.cola2.fin += 1;
-        cola_procesos.cola2.queue[cola_procesos.cola2.fin] = proc;
-        printf("Pg: %d Cola: 2\n", cola_procesos.cola2.queue[cola_procesos.cola2.fin].pid);
+        if (cola_procesos.cola2.cant == 0){
+          proc->sig = NULL;
+          cola_procesos.cola2.prim = proc;
+          cola_procesos.cola2.ult = proc;
+          cola_procesos.cola2.cant = 1;
+        } 
+        else {
+          cola_procesos.cola2.ult->sig = proc;
+          cola_procesos.cola2.ult = proc;
+          cola_procesos.cola2.cant += 1;
+        }
+        printf("Pg: %d Cola: 2\n", cola_procesos.cola2.ult->pid);
         fflush(stdout);
       }
       else if (prioridad == 3) {
-        cola_procesos.cola3.fin += 1;
-        cola_procesos.cola3.queue[cola_procesos.cola1.fin] = proc;
-        printf("Pg: %d Cola: 3\n", cola_procesos.cola3.queue[cola_procesos.cola3.fin].pid);
+        if (cola_procesos.cola3.cant == 0){
+          proc->sig = NULL;
+          cola_procesos.cola3.prim = proc;
+          cola_procesos.cola3.ult = proc;
+          cola_procesos.cola3.cant = 1;
+        } 
+        else {
+          cola_procesos.cola3.ult->sig = proc;
+          cola_procesos.cola3.ult = proc;
+          cola_procesos.cola3.cant += 1;
+        }
+        printf("Pg: %d Cola: 3\n", cola_procesos.cola3.ult->pid);
         fflush(stdout);
       }
 
@@ -76,6 +105,10 @@ void* reloj(void* arg) {
       pthread_cond_wait(&cond1, &mutex);
     }
     done=0;
+
+    printf("-----------------------------------------------------------\n");
+    fflush(stdout);
+
     pthread_cond_broadcast(&cond2);
     pthread_mutex_unlock(&mutex);
   }
@@ -93,7 +126,7 @@ void* timer(void* arg) {
       cont_t = 0;
     }
     else{
-      printf("Timer: NO\n");
+    printf("Timer: NO\n");
     fflush(stdout);
     }
 

@@ -8,6 +8,7 @@
 typedef struct {
   int pid;
   int vida;
+  struct PCB* sig;
 } PCB;
 
 /*
@@ -23,8 +24,11 @@ process_queue cola_procesos = {0, -1};
 
 // Estructura de Cola de Procesos
 typedef struct {
-  PCB queue[100000];
-  int fin;
+  //struct PCB* prim;
+  //struct PCB* ult;
+  PCB* prim;
+  PCB* ult;
+  int cant;
   int quantum;
 } cola;
 

@@ -26,12 +26,12 @@ int main(int argc, char* argv[]) {
   machine maquina = {atoi(argv[4]), atoi(argv[5]), atoi(argv[6])};
 
   //Asignamos los valores a las colas
-  cola1.fin=-1;
   cola1.quantum=5;
-  cola2.fin=-1;
+  cola1.cant=0;
   cola2.quantum=10;
-  cola3.fin=-1;
-  cola2.quantum=0; // 0 para indicar que es infinito, ya que la ultima cola es FCFS
+  cola2.cant=0;
+  cola3.quantum=0; // 0 para indicar que es infinito, ya que la ultima cola es FCFS
+  cola3.cant=0;
   cola_procesos.cola1 = cola1;
   cola_procesos.cola2 = cola2;
   cola_procesos.cola3 = cola3;
