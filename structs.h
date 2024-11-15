@@ -50,7 +50,11 @@ process_queue cola_procesos;
 
 // Estructura Machine
 typedef struct {
-  int CPUs;
+  int cpus;
   int cores;
   int hilos;
 } machine;
+
+machine hardware;
+//PCB* maquina[][][];
+PCB**** maquina; // Declaración de puntero para memoria dinámica

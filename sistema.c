@@ -4,6 +4,7 @@
 #include <time.h>
 #include <semaphore.h>
 #include "threads.h"
+
 //#include "structs.h"
 
 
@@ -17,13 +18,32 @@ int main(int argc, char* argv[]) {
   int freq_c = atoi(argv[1]);
   int freq_t = atoi(argv[2]);
   int freq_p = atoi(argv[3]);
+  int cpus = atoi(argv[4]);
+  int cores = atoi(argv[5]);
+  int hilos = atoi(argv[6]);
   mul_t = freq_c * freq_t;
   mul_p = freq_c * freq_p;
   cont_t = 0;
   cont_p = 0;
 
+
+  hardware.cpus = atoi(argv[4]);
+  hardware.cores = atoi(argv[5]);
+  hardware.hilos = atoi(argv[6]);
+
   //Inicializamos la estructura machine
-  machine maquina = {atoi(argv[4]), atoi(argv[5]), atoi(argv[6])};
+  //maquina[hardware.cpus][hardware.cores][hardware.hilos];
+  // Inicializamos la estructura machine (arreglo tridimensional dinámico)
+    maquina = (PCB****)malloc(hardware.cpus * sizeof(PCB***));
+    for (int i = 0; i < hardware.cpus; i++) {
+        maquina[i] = (PCB***)malloc(hardware.cores * sizeof(PCB**));
+        for (int j = 0; j < hardware.cores; j++) {
+            maquina[i][j] = (PCB**)malloc(hardware.hilos * sizeof(PCB*));
+            for (int k = 0; k < hardware.hilos; k++) {
+                maquina[i][j][k] = NULL; // Inicializamos cada puntero a NULL
+            }
+        }
+    }
 
   //Asignamos los valores a las colas
   cola1.quantum=5;

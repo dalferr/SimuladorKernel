@@ -4,6 +4,7 @@
 #include <time.h>
 #include <semaphore.h>
 #include "structs.h"
+#include "funciones.h"
 
 
 // Definir variables de sincronización
@@ -46,52 +47,8 @@ void* process_gen(void* arg) {
       proc->pid = (rand() % 32668) + 100; //Para simular un pid aleatorio
       proc->vida = (rand() % 20) + 1; //Para simular un tiempo de vida aleatorio
       prioridad = (rand() % 3) + 1; //Para simular un nivel de prioridad aleatorio del 1 al 3
-
-      if (prioridad == 1) {
-        if (cola_procesos.cola1.cant == 0){
-          proc->sig = NULL;
-          cola_procesos.cola1.prim = proc;
-          cola_procesos.cola1.ult = proc;
-          cola_procesos.cola1.cant = 1;
-        } 
-        else {
-          cola_procesos.cola1.ult->sig = proc;
-          cola_procesos.cola1.ult = proc;
-          cola_procesos.cola1.cant += 1;
-        }
-        printf("Pg: %d Cola: 1\n", cola_procesos.cola1.ult->pid);
-        fflush(stdout);
-      }
-      else if (prioridad == 2) {
-        if (cola_procesos.cola2.cant == 0){
-          proc->sig = NULL;
-          cola_procesos.cola2.prim = proc;
-          cola_procesos.cola2.ult = proc;
-          cola_procesos.cola2.cant = 1;
-        } 
-        else {
-          cola_procesos.cola2.ult->sig = proc;
-          cola_procesos.cola2.ult = proc;
-          cola_procesos.cola2.cant += 1;
-        }
-        printf("Pg: %d Cola: 2\n", cola_procesos.cola2.ult->pid);
-        fflush(stdout);
-      }
-      else if (prioridad == 3) {
-        if (cola_procesos.cola3.cant == 0){
-          proc->sig = NULL;
-          cola_procesos.cola3.prim = proc;
-          cola_procesos.cola3.ult = proc;
-          cola_procesos.cola3.cant = 1;
-        } 
-        else {
-          cola_procesos.cola3.ult->sig = proc;
-          cola_procesos.cola3.ult = proc;
-          cola_procesos.cola3.cant += 1;
-        }
-        printf("Pg: %d Cola: 3\n", cola_procesos.cola3.ult->pid);
-        fflush(stdout);
-      }
+    //
+     anadirACola(proc, prioridad);
 
     sem_post(&sem3);
   }
@@ -106,8 +63,10 @@ void* reloj(void* arg) {
     }
     done=0;
 
-    printf("-----------------------------------------------------------\n");
-    fflush(stdout);
+    //printf("-----------------------------------------------------------\n");
+    //fflush(stdout);
+
+    imprimirColas();    
 
     pthread_cond_broadcast(&cond2);
     pthread_mutex_unlock(&mutex);
