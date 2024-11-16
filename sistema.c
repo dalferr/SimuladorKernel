@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
   cola1.cant=0;
   cola2.quantum=10;
   cola2.cant=0;
-  cola3.quantum=0; // 0 para indicar que es infinito, ya que la ultima cola es FCFS
+  cola3.quantum=-1; // -1 para indicar que es infinito, ya que la ultima cola es FCFS
   cola3.cant=0;
   cola_procesos.cola1 = cola1;
   cola_procesos.cola2 = cola2;

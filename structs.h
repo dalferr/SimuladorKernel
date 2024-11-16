@@ -1,3 +1,5 @@
+// vim: set filetype=c:
+
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -8,6 +10,8 @@
 typedef struct {
   int pid;
   int vida;
+  int quantum;
+  int cola;
   struct PCB* sig;
 } PCB;
 

@@ -1,3 +1,5 @@
+// vim: set filetype=c:
+
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -35,6 +37,9 @@ void* sche_dispa(void* arg) {
     sem_wait(&sem); //se queda esperando a timer
     printf("Se ha llamado al Scheduler\n");
     fflush(stdout);
+
+    asignarEstructura(); //Mueve los PCBs de las colas a la estructura, viceversa si se les acaba el quantum y los elimina si acaba.
+
     sem_post(&sem1);
   }
 }
@@ -66,7 +71,9 @@ void* reloj(void* arg) {
     //printf("-----------------------------------------------------------\n");
     //fflush(stdout);
 
+    imprimirProcesos();
     imprimirColas();    
+    moverEstructura();
 
     pthread_cond_broadcast(&cond2);
     pthread_mutex_unlock(&mutex);
