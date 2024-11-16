@@ -64,10 +64,11 @@ void anadirACola(PCB* proc, int prioridad) {
 }
 
 void imprimirColas(){
-  printf("----------------------------------------------------------\n");
+  printf("\n----------------------------------------------------------\n");
+  printf("***COLAS***");
   PCB* proc;
 
-  printf("#####Cola 1#####\n");
+  printf("\n#####Cola 1#####\n");
   if (cola_procesos.cola1.cant != 0){
     proc = cola_procesos.cola1.prim;
     printf("PID: %d, VIDA: %d, Q: %d\n", proc->pid, proc->vida, proc->quantum);
@@ -136,17 +137,29 @@ void asignarEstructura(){
         if (proceso == NULL){
           maquina[cpu][core][hilo] = sacarPCBDeCola();
         }
-        else if (proceso->vida == 0){
-          free(proceso);
-          maquina[cpu][core][hilo] = sacarPCBDeCola();
-        }
-        else if ((proceso->quantum <= 0) && (proceso->cola == 1)){ //Si se le acaba el quantum vuelta a la cola
-          maquina[cpu][core][hilo] = NULL;
-          anadirACola(proceso, 2);
-        }
-        else if ((proceso->quantum <= 0) && (proceso->cola == 2)){ //Si se le acaba el quantum vuelta a la cola
-          maquina[cpu][core][hilo] = NULL;
-          anadirACola(proceso, 3);
+      }
+    }
+  }
+}
+
+void sacarDeEstructura(){
+  for (int cpu = 0; cpu < hardware.cpus; cpu++){
+    for (int core = 0; core < hardware.cores; core++){
+      for (int hilo = 0; hilo < hardware.hilos; hilo++){
+        PCB* proceso = maquina[cpu][core][hilo];
+        if (proceso != NULL){
+          if (proceso->vida == 0){
+            free(proceso);
+            maquina[cpu][core][hilo] = NULL;
+          }
+          else if ((proceso->quantum <= 0) && (proceso->cola == 1)){ //Si se le acaba el quantum vuelta a la cola
+            maquina[cpu][core][hilo] = NULL;
+            anadirACola(proceso, 2);
+          }
+          else if ((proceso->quantum <= 0) && (proceso->cola == 2)){ //Si se le acaba el quantum vuelta a la cola
+            maquina[cpu][core][hilo] = NULL;
+            anadirACola(proceso, 3);
+          }
         }
       }
     }
@@ -172,13 +185,14 @@ void moverEstructura(){
 
 void imprimirProcesos(){
   printf("----------------------------------------------------------\n");
-  printf("***PROCESOS EN EJECUCIÓN***\n");
+  printf("***PROCESOS EN EJECUCIÓN***");
   for (int cpu = 0; cpu < hardware.cpus; cpu++){
     for (int core = 0; core < hardware.cores; core++){
       for (int hilo = 0; hilo < hardware.hilos; hilo++){
+        printf("\nCPU: %d, Core: %d, Thread: %d --->", cpu, core, hilo);
         PCB* proceso = maquina[cpu][core][hilo];
         if (proceso != NULL){
-          printf("PID: %d, VIDA: %d, Q: %d\n", proceso->pid, proceso->vida, proceso->quantum);
+          printf(" PID: %d, VIDA: %d, Q: %d, Cola: %d", proceso->pid, proceso->vida, proceso->quantum, proceso->cola);
         }
       }
     }

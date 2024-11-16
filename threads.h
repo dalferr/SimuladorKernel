@@ -38,7 +38,8 @@ void* sche_dispa(void* arg) {
     printf("Se ha llamado al Scheduler\n");
     fflush(stdout);
 
-    asignarEstructura(); //Mueve los PCBs de las colas a la estructura, viceversa si se les acaba el quantum y los elimina si acaba.
+    sacarDeEstructura(); //Elimina los procesos acabados de la estrcutura y los a los que se les ha acabado el quantum los manda a la siguiente cola.
+    asignarEstructura(); //Mueve los PCBs de las colas a la estructura.
 
     sem_post(&sem1);
   }
@@ -92,7 +93,7 @@ void* timer(void* arg) {
       cont_t = 0;
     }
     else{
-    printf("Timer: NO\n");
+    printf("Scheduler: NO\n");
     fflush(stdout);
     }
 

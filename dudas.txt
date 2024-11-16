@@ -1,0 +1,2 @@
+1) ¿Cuando se acaba el quantum genera interrupción o espera a que se ejecute el dispatcher?
+2) ¿Hay que crear y que son hilos ociosos(se mencionana en el enunciado de la a segunda parte)?
