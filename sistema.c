@@ -3,9 +3,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <semaphore.h>
-#include "threads.h"
+#include "structs.h"
+#include "sistema.h"
 
-//#include "structs.h"
+
+// Incluimos las cabeceras de los hilos
+void* reloj(void* arg);
+void* timer(void* arg);
+void* timer1(void* arg);
+void* process_gen(void* arg);
+void* sche_dispa(void* arg);
 
 
 int main(int argc, char* argv[]) {

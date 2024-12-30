@@ -1,5 +1,3 @@
-// vim: set filetype=c:
-
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -36,11 +34,6 @@ typedef struct {
   int quantum;
 } cola;
 
-  //Inicializamos las colas
-  cola cola1;
-  cola cola2;
-  cola cola3;// 0 para indicar que es infinito, ya que la ultima cola es FCFS
-
 
 
 // Estructura de Cola de Procesos
@@ -50,7 +43,7 @@ typedef struct {
   cola cola3;
 } process_queue;
   
-process_queue cola_procesos;
+
 
 // Estructura Machine
 typedef struct {
@@ -59,6 +52,4 @@ typedef struct {
   int hilos;
 } machine;
 
-machine hardware;
-//PCB* maquina[][][];
-PCB**** maquina; // Declaración de puntero para memoria dinámica
+
