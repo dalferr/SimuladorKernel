@@ -17,3 +17,11 @@ extern int mul_p;
 extern int cont_t;
 extern int cont_p;
 extern int prioridad;
+
+//Declarar las funciones externas 
+extern void sacarDeEstructura();
+extern void asignarEstructura();
+extern void anadirACola(PCB* proc, int prioridad);
+extern void imprimirProcesos();
+extern void imprimirColas();
+extern void moverEstructura();

@@ -5,7 +5,7 @@
 
 
 // Estructura de PCB
-typedef struct {
+typedef struct PCB {
   int pid;
   int vida;
   int quantum;
