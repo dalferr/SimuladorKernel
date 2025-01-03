@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <semaphore.h>
-#include "structs.h"
-#include "threads.h"
+#include "../include/structs.h"
+#include "../include/threads.h"
 //#include "funciones.h"
 
 

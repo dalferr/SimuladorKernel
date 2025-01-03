@@ -1,5 +1,5 @@
-#include "structs.h"
-#include "funciones.h"
+#include "../include/structs.h"
+#include "../include/funciones.h"
 
 void anadirACola(PCB* proc, int prioridad) {
   if (prioridad == 1) {

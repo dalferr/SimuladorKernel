@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <semaphore.h>
-#include "structs.h"
+#include "../include/structs.h"
 
 // Definimos las variables de sincronización
 pthread_mutex_t mutex;

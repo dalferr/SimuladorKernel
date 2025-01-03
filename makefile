@@ -1,14 +1,14 @@
 CC = gcc
-OBJ = threads.o funciones.o 
+OBJ = source/threads.o source/funciones.o 
 
-sim: sistema.c $(OBJ)
-	$(CC) -o sim sistema.c $(OBJ)
+sim: source/sistema.c $(OBJ)
+	$(CC) -o sim source/sistema.c $(OBJ)
 
-funciones.o: funciones.c 
-	$(CC) -c funciones.c 
+funciones.o: source/funciones.c 
+	$(CC) -c source/funciones.c 
 
-threads.o: threads.c 
-	$(CC) -c threads.c 
+threads.o: source/threads.c 
+	$(CC) -c source/threads.c 
 
 clean:
 	rm -f $(OBJ)
