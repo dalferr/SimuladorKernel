@@ -16,8 +16,6 @@ typedef struct PCB {
 
 // Estructura de Cola de Procesos
 typedef struct {
-  //struct PCB* prim;
-  //struct PCB* ult;
   PCB* prim;
   PCB* ult;
   int cant;

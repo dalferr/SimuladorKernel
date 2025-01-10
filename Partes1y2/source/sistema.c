@@ -7,10 +7,10 @@
 
 // Definimos las variables de sincronización
 pthread_mutex_t mutex;
-sem_t sem; //semaforo para sincronizar el timer con el scheduler
-sem_t sem1; //semaforo para sincronizar el timer con el scheduler
-sem_t sem2; //semaforo para sincronizar el timer con el scheduler
-sem_t sem3; //semaforo para sincronizar el timer con el scheduler
+sem_t sem; 
+sem_t sem1; 
+sem_t sem2; 
+sem_t sem3; 
 pthread_cond_t cond;
 pthread_cond_t cond1;
 pthread_cond_t cond2;
