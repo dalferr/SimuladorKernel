@@ -1,0 +1,162 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <time.h>
+#include <semaphore.h>
+#include <stdint.h>
+#include "../include/structs.h"
+
+// Definimos las variables de sincronización
+pthread_mutex_t mutex;
+sem_t sem; //semaforo para sincronizar el timer con el scheduler
+sem_t sem1; //semaforo para sincronizar el timer con el scheduler
+sem_t sem2; //semaforo para sincronizar el timer con el scheduler
+sem_t sem3; //semaforo para sincronizar el timer con el scheduler
+pthread_cond_t cond;
+pthread_cond_t cond1;
+pthread_cond_t cond2;
+
+// Definimos más variables
+int done = 0;
+int tenp_kont = 2;
+int freq_c;
+int mul_t;
+int mul_p;
+int cont_t;
+int cont_p;
+int prioridad;
+
+
+//Definimos las colas
+cola cola1;
+cola cola2;
+cola cola3;
+
+//Definimos la cola de procesos
+process_queue cola_procesos;
+
+machine hardware;
+//PCB**** maquina; // Declaración de puntero para memoria dinámica
+thread**** maquina; // Declaración de puntero para memoria dinámica
+
+//Definimos la memoria fisica
+MemoriaFisica mem_fisica;
+
+// Incluimos las cabeceras de los hilos
+void* reloj(void* arg);
+void* timer(void* arg);
+void* timer1(void* arg);
+void* process_gen(void* arg);
+void* sche_dispa(void* arg);
+
+
+int main(int argc, char* argv[]) {
+  
+  if (argc != 7) {
+    printf("\nUso: %s <frecuencia_clock> <frecuencia_temp> <frecuencia_processGen> <num_cpus> <num_cores> <num_hilos>\n", argv[0]);
+    exit(1);
+  }
+
+  int freq_c = atoi(argv[1]);
+  int freq_t = atoi(argv[2]);
+  int freq_p = atoi(argv[3]);
+  int cpus = atoi(argv[4]);
+  int cores = atoi(argv[5]);
+  int hilos = atoi(argv[6]);
+  mul_t = freq_c * freq_t;
+  mul_p = freq_c * freq_p;
+  cont_t = 0;
+  cont_p = 0;
+
+
+  hardware.cpus = atoi(argv[4]);
+  hardware.cores = atoi(argv[5]);
+  hardware.hilos = atoi(argv[6]);
+
+  /*
+  //Inicializamos la estructura machine
+  //maquina[hardware.cpus][hardware.cores][hardware.hilos];
+  // Inicializamos la estructura machine (arreglo tridimensional dinámico)
+    maquina = (PCB****)malloc(hardware.cpus * sizeof(PCB***));
+    for (int i = 0; i < hardware.cpus; i++) {
+        maquina[i] = (PCB***)malloc(hardware.cores * sizeof(PCB**));
+        for (int j = 0; j < hardware.cores; j++) {
+            maquina[i][j] = (PCB**)malloc(hardware.hilos * sizeof(PCB*));
+            for (int k = 0; k < hardware.hilos; k++) {
+                maquina[i][j][k] = NULL; // Inicializamos cada puntero a NULL
+            }
+        }
+    }
+  */
+    //Inicializamos la estructura machine
+  //maquina[hardware.cpus][hardware.cores][hardware.hilos];
+  // Inicializamos la estructura machine (arreglo tridimensional dinámico)
+    maquina = (thread****)malloc(hardware.cpus * sizeof(thread***));
+    for (int i = 0; i < hardware.cpus; i++) {
+        maquina[i] = (thread***)malloc(hardware.cores * sizeof(thread**));
+        for (int j = 0; j < hardware.cores; j++) {
+            maquina[i][j] = (thread**)malloc(hardware.hilos * sizeof(thread*));
+            for (int k = 0; k < hardware.hilos; k++) {
+                maquina[i][j][k] = (thread*)malloc(sizeof(thread));
+                maquina[i][j][k]->ptbr = NULL; // Inicializamos cada puntero a NULL
+                maquina[i][j][k]->pc = -1; // Inicializamos cada puntero a NULL
+                maquina[i][j][k]->pcb = (PCB*)malloc(sizeof(PCB)); // Inicializamos cada puntero a NULL
+            }
+        }
+    }
+
+  //Asignamos los valores a las colas
+  cola1.quantum=5;
+  cola1.cant=0;
+  cola2.quantum=10;
+  cola2.cant=0;
+  cola3.quantum=-1; // -1 para indicar que es infinito, ya que la ultima cola es FCFS
+  cola3.cant=0;
+  cola_procesos.cola1 = cola1;
+  cola_procesos.cola2 = cola2;
+  cola_procesos.cola3 = cola3;
+
+  //Inicializamos la memoria fisica
+  EntradaTablaPaginas entrada;
+  entrada.dir_virtual = NULL;
+  entrada.dir_fisica = NULL;
+  TablaPaginas kernel;
+  for (int i; i < 50; i++) {
+    kernel.entrada[i] = entrada;
+  }
+  for (int i = 0; i < 50; i++){
+    mem_fisica.kernel[i] = kernel;
+  }
+  for (int i = 0; i < 521788; i++) {
+    mem_fisica.restoMemoria[i] = NULL;
+  }
+
+  //Iniciamos las variables de los hilos
+  pthread_mutex_init(&mutex, NULL);
+  sem_init(&sem, 0, 0);
+  sem_init(&sem1, 0, 0);
+  sem_init(&sem2, 0, 0);
+  sem_init(&sem3, 0, 0);
+  pthread_cond_init(&cond, NULL);
+  pthread_cond_init(&cond1, NULL);
+  pthread_cond_init(&cond2, NULL);
+
+  // Creamos los hilos
+  pthread_t th_clock;
+  pthread_t th_timer;
+  pthread_t th_timer1;
+  pthread_t th_sche_dispa;
+  pthread_t th_process_gen;
+  pthread_create(&th_clock, NULL, reloj, NULL);
+  pthread_create(&th_timer, NULL, timer, NULL);
+  pthread_create(&th_timer1, NULL, timer1, NULL);
+  pthread_create(&th_sche_dispa, NULL, sche_dispa, NULL);
+  pthread_create(&th_process_gen, NULL, process_gen, NULL);
+
+  // Esperar a que los hilos se junten
+  pthread_join(th_clock, NULL);
+  pthread_join(th_timer, NULL);
+  pthread_join(th_timer1, NULL);
+  pthread_join(th_sche_dispa, NULL);
+  pthread_join(th_process_gen, NULL);
+}
