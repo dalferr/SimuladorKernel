@@ -2,7 +2,7 @@
 
 Este proyecto es un simulador de un kernel desarrollado para la asignatura de Sistemas Operativos de la carrera Ingeniería Informática . Su objetivo es plasmar en código los conceptos teóricos estudiados, como la gestión y planificación de procesos, la simulación del sistema de memoria y aspectos de seguridad, utilizando ANSI C. 
 
-- Una versión **mas extensa** de la **documentación** está en -> [[Documentacion.pdf]]
+- Una versión **mas extensa** de la **documentación** está en -> [Documentación]https://github.com/dalferr/SimuladorKernel/blob/master/Documentacion.pdf
 ## Código
 
 - **sistema.c:** Contiene las inicializaciones de las variables y estructuras que se utilizarán. Además incluye la función main(), que se encargará de inicializar los hilos.
